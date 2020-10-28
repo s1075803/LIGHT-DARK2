@@ -1,0 +1,299 @@
+---
+title: "LIGHT_DARK2"
+author: "Jesse Bragger"
+output: html_notebook
+---
+
+```{r}
+library(readxl)
+lightdark2 <- read_excel("light-dark2.xls")
+# if you want to exclude AZ or FL take hashtags off below
+#lightdark2 = subset(lightdark2, LOCATION != 'AZ')
+lightdark2 = subset(lightdark2, LOCATION != 'FL')
+lightdark2 = subset(lightdark2, SEX != 'F')
+lightdark2 = subset(lightdark2, IND != 'NY_MJS_19x13_B5xB10')
+lightdark2 = subset(lightdark2, IND != 'NY_MJS_19x13_B5xB10_B2')
+lightdark2 = subset(lightdark2, IND != 'NY_MJS_19x13_B7xB10_B12')
+lightdark2 = subset(lightdark2, IND != 'NY_MJS_19x13_B5xB10_B10')
+lightdark2 = subset(lightdark2, IND != 'NY_MJS_83x80_A1xA8_A12')
+lightdark2 = subset(lightdark2, IND != 'NY_MJS_83x80_A3xA4_A12')
+lightdark2 = subset(lightdark2, IND != 'NY_MJS_83x80_A3xA4_A4')
+```
+
+```{r}
+#install.packages("mosaic")
+library(mosaic)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("utils")
+library(utils)
+```
+
+```{r}
+#install.packages("ggplot2")
+library(ggplot2)
+#install.packages("epiDisplay")
+library(epiDisplay)
+#install.packages("tidyr")
+library(tidyr)
+```
+
+```{r}
+#install.packages("ggpubr")
+library(ggpubr)
+#install.packages("car")
+library(car)
+```
+
+```{r}
+#install.packages("easypower")
+library(easypower)
+#install.packages("heplots")
+library(heplots)
+
+```
+
+```{r}
+tally(lightdark2$SEX)
+tally(lightdark2$LOCATION)
+```
+
+```{r}
+mice <- 
+    lightdark2 %>%
+ count(LOCATION, SEX, sort = TRUE)
+mice
+```
+## Beeswarm Plots 
+```{r}
+#install.packages('beeswarm')
+library(beeswarm)
+#Female=Black
+
+######### Total Time in Dark or Light (sec)
+#1  Total Sec Z1 (Dark)
+boxplot(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION, method = "swarm", pch = 20, add=TRUE, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time in Dark (Sec)", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+
+
+#2  Total Sec Z2 (Light)
+boxplot(lightdark2$TotalSecZ2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TotalSecZ2 ~ lightdark2$LOCATION, method = "swarm", add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time in Light (Sec)", ylim=c(0,1600) )
+legend("bottomleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+
+########## Total Time Ambulatory in Dark or Light (sec)
+#3  Total Ambulatory Z1 (Dark)
+boxplot(lightdark2$TotalSecAmbZ1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TotalSecAmbZ1 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time Ambulatory in Dark (Sec)", ) 
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+#4  Total Ambulatory Z2 (Light)
+boxplot(lightdark2$TotalSecAmbZ2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TotalSecAmbZ2 ~ lightdark2$LOCATION, method = "swarm", add=TRUE,pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time Ambulatory in Light (Sec)", ) 
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+
+######### Total Time Resting in Dark or Light (sec)
+#5  Total Resting Z1 (Dark)
+boxplot(lightdark2$TotalSecRestZ1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TotalSecRestZ1 ~ lightdark2$LOCATION, method = "swarm", add=TRUE,pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time Resting in Dark (Sec)", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+#6  Total Resting Z2 (Light)
+boxplot(lightdark2$TotalSecRestZ2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TotalSecRestZ2 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time Resting in Light (Sec)", )
+legend("topright", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+
+######### Total Number of Entries in Dark or Light
+#7  Total Number of Entries into Z1 (Dark)
+boxplot(lightdark2$`Entries Z1...16` ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$`Entries Z1...16` ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Number of Entries into Dark", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+#8  Total Number of Entries into Z2 (Light)
+boxplot(lightdark2$`Entries Z2...17` ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$`Entries Z2...17` ~ lightdark2$LOCATION, method = "swarm", add=TRUE,pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = " Total Number of Entries into Light", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+
+######### Total DIstance (cm) in Dark or Light
+#7  Total Distance Z1 (Dark)
+boxplot(lightdark2$TOT_DISTANCE_Z1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TOT_DISTANCE_Z1 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Distance (cm) in Dark", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+#8  Total Distance Z2 (Light)
+boxplot(lightdark2$TOT_DISTANCE_Z2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$TOT_DISTANCE_Z2 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = " Total Distance (cm) in Light", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+
+######### Average Velocity in Dark or Light
+#7  Average Velocity Z1 (Dark)
+boxplot(lightdark2$Avg_velz1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$Avg_velz1 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Average velocity in Dark", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+#8  Average Velocity Z2 (Light)
+boxplot(lightdark2$Avg_velz2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
+beeswarm(lightdark2$Avg_velz2 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = " Average Velocity in Light", )
+legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
+```
+## Histograms
+```{r}
+######### Total Time in Dark or Light (sec)
+#1  Total Sec Z1 (Dark)
+gf_dhistogram(~ lightdark2$TotalSecZ1, data = lightdark2, xlab="Total Time in Dark (sec)") %>% gf_fitdistr(dist = "norm")
+#2  Total Sec Z2 (Light)
+gf_dhistogram(~ lightdark2$TotalSecZ2, data = lightdark2, xlab="Total Time in Light (sec)") %>% gf_fitdistr(dist = "norm")
+
+########## Total Time Ambulatory in Dark or Light (sec)
+#3  Total Ambulatory Z1 (Dark)
+gf_dhistogram(~ lightdark2$TotalSecAmbZ1, data = lightdark2, xlab="Total Time Ambulatory in Dark (sec)") %>% gf_fitdistr(dist = "norm")
+#4  Total Ambulatory Z2 (Light)
+gf_dhistogram(~ lightdark2$TotalSecAmbZ2, data = lightdark2, xlab="Total Time Ambulatory in Light (sec)") %>% gf_fitdistr(dist = "norm")
+
+######### Total Time Resting in Dark or Light (sec)
+#5  Total Resting Z1 (Dark)
+gf_dhistogram(~ lightdark2$TotalSecRestZ1, data = lightdark2, xlab="Total Time Resting in Dark (sec)") %>% gf_fitdistr(dist = "norm")
+#6  Total Resting Z2 (Light)
+gf_dhistogram(~ lightdark2$TotalSecRestZ2, data = lightdark2, xlab="Total Time Resting in Light (sec)") %>% gf_fitdistr(dist = "norm")
+
+######### Total Number of Entries in Dark or Light
+#7  Total Number of Entries into Z1 (Dark)
+gf_dhistogram(~ lightdark2$`Entries Z1...16`, data = lightdark2, xlab="Total Number of Entries in Dark") %>% gf_fitdistr(dist = "norm")
+#8  Total Number of Entries into Z2 (Light)
+gf_dhistogram(~ lightdark2$`Entries Z2...17`, data = lightdark2, xlab="Total Number of Entries in Light") %>% gf_fitdistr(dist = "norm")
+
+######### Total DIstance (cm) in Dark or Light
+#7  Total Distance Z1 (Dark)
+gf_dhistogram(~ lightdark2$TOT_DISTANCE_Z2, data = lightdark2, xlab="Total Distance (cm) in Dark") %>% gf_fitdistr(dist = "norm")
+#8  Total Distance Z2 (Light)
+gf_dhistogram(~ lightdark2$TOT_DISTANCE_Z1, data = lightdark2, xlab="Total Distance (cm) in Light") %>% gf_fitdistr(dist = "norm")
+```
+
+## ANOVAs
+```{r}
+######### Total Time in Dark or Light (sec)
+#1  Total Sec Z1 (Dark)
+model<-glm(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+#2  Total Sec Z2 (Light)
+model<-glm(lightdark2$TotalSecZ2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+
+########## Total Time Ambulatory in Dark or Light (sec)
+#3  Total Ambulatory Z1 (Dark)
+model<-glm(lightdark2$TotalSecAmbZ1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+#4  Total Ambulatory Z2 (Light)
+model<-glm(lightdark2$TotalSecAmbZ2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+
+######### Total Time Resting in Dark or Light (sec)
+#5  Total Resting Z1 (Dark)
+model<-glm(lightdark2$TotalSecRestZ1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+#6  Total Resting Z2 (Light)
+model<-glm(lightdark2$TotalSecRestZ2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+
+######### Total Number of Entries in Dark or Light
+#7  Total Number of Entries into Z1 (Dark)
+model<-glm(lightdark2$`Entries Z1...16` ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+#8  Total Number of Entries into Z2 (Light)
+model<-glm(lightdark2$`Entries Z2...17` ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+
+######### Total Distance in Dark or Light
+#7  Total Distance Z1 (Dark)
+model<-glm(lightdark2$TOT_DISTANCE_Z1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+#8  Total Distance Z2 (Light)
+model<-glm(lightdark2$TOT_DISTANCE_Z2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+
+```
+## Tukey Tests
+```{r}
+#  Total Sec Z1 (Dark)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+#  Total Sec Z2 (Light)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TotalSecZ2 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+#  Total Ambulatory Z1 (Dark)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TotalSecAmbZ1 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+#  Total Ambulatory Z2 (Light)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TotalSecAmbZ2 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+#  Total Sec Rest Z1 (Dark)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TotalSecRestZ1 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+#  Total Sec Rest Z2 (Light)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TotalSecRestZ2 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+#  Total Number of Entries into Z1 (Dark)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$`Entries Z1...16` ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+#  Total Number of Entries into Z2 (Light)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$`Entries Z2...17` ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+#  Total Distance Z1 (Dark)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TOT_DISTANCE_Z1 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+#  Total Distance Z2 (Light)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$TOT_DISTANCE_Z2 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+```
