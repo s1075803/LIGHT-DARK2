@@ -8,7 +8,7 @@ output: html_notebook
 library(readxl)
 lightdark2 <- read_excel("light-dark2.xls")
 # if you want to exclude AZ or FL take hashtags off below
-#lightdark2 = subset(lightdark2, LOCATION != 'AZ')
+lightdark2 = subset(lightdark2, LOCATION != 'AZ')
 lightdark2 = subset(lightdark2, LOCATION != 'FL')
 lightdark2 = subset(lightdark2, SEX != 'F')
 lightdark2 = subset(lightdark2, IND != 'NY_MJS_19x13_B5xB10')
@@ -218,6 +218,14 @@ results<-Anova(model, test="F")
 results
 
 ```
+```{r}
+model<-TukeyHSD(glm(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION ))
+model
+
+model<-TukeyHSD(glm(lightdark2$TotalSecZ2 ~  lightdark2$LOCATION ))
+model
+```
+
 ## Tukey Tests
 ```{r}
 #  Total Sec Z1 (Dark)
@@ -297,3 +305,12 @@ as.data.frame(tidy(model)) %>%
     filter(adj.p.value < .05)
 model
 ```
+
+```{r}
+library(ggfortify)
+df <- lightdark2[ ,c(4, 6, 8, 10, 12, 14, 16, 17, 18, 19, 20, 21)]
+pca_res <- prcomp(df, scale. = TRUE)
+
+autoplot(pca_res, data= lightdark2, colour = 'LOCATION', frame=TRUE)
+```
+
