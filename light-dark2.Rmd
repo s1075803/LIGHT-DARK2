@@ -313,4 +313,49 @@ pca_res <- prcomp(df, scale. = TRUE)
 
 autoplot(pca_res, data= lightdark2, colour = 'LOCATION', frame=TRUE)
 ```
+```{r}
+###PCA added to pca dataframe
+str(pca_res)
+summary(pca_res)
+pca<-cbind(df,pca_res[["x"]])
+str(pca)
+pca
+```
+
+#PCA ANOVAs
+```{r}
+#Using PCA to account for 12 correlated (independent) variables with the predictor LOCATION. 
+##PC1
+model<-glm(pca$PC1 ~ lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+
+##PC2
+model<-glm(pca$PC2 ~ lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+
+##PC3
+model<-glm(pca$PC3 ~ lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+```
+
+
+
+
+
+
+
+##MANOVA
+```{r}
+res.man <- manova(cbind(lightdark2$TotalSecZ1, lightdark2$TotalSecZ2, lightdark2$TotalSecAmbZ1, lightdark2$TotalSecAmbZ2) ~ lightdark2$LOCATION, data = lightdark2)
+summary(res.man, test="Pillai")
+
+```
+
+
+
+
+
 
