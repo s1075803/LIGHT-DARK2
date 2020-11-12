@@ -50,8 +50,11 @@ library(car)
 library(easypower)
 #install.packages("heplots")
 library(heplots)
+#install.packages("DescTools")
+library(DescTools)
 
 ```
+
 
 ```{r}
 tally(lightdark2$SEX)
@@ -75,8 +78,6 @@ library(beeswarm)
 boxplot(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
 beeswarm(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION, method = "swarm", pch = 20, add=TRUE, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time in Dark (Sec)", )
 legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
-
-
 #2  Total Sec Z2 (Light)
 boxplot(lightdark2$TotalSecZ2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
 beeswarm(lightdark2$TotalSecZ2 ~ lightdark2$LOCATION, method = "swarm", add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Time in Light (Sec)", ylim=c(0,1600) )
@@ -113,21 +114,21 @@ beeswarm(lightdark2$`Entries Z2...17` ~ lightdark2$LOCATION, method = "swarm", a
 legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
 
 ######### Total DIstance (cm) in Dark or Light
-#7  Total Distance Z1 (Dark)
+#9  Total Distance Z1 (Dark)
 boxplot(lightdark2$TOT_DISTANCE_Z1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
 beeswarm(lightdark2$TOT_DISTANCE_Z1 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Total Distance (cm) in Dark", )
 legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
-#8  Total Distance Z2 (Light)
+#10  Total Distance Z2 (Light)
 boxplot(lightdark2$TOT_DISTANCE_Z2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
 beeswarm(lightdark2$TOT_DISTANCE_Z2 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = " Total Distance (cm) in Light", )
 legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
 
 ######### Average Velocity in Dark or Light
-#7  Average Velocity Z1 (Dark)
+#11  Average Velocity Z1 (Dark)
 boxplot(lightdark2$Avg_velz1 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
 beeswarm(lightdark2$Avg_velz1 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = "Average velocity in Dark", )
 legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
-#8  Average Velocity Z2 (Light)
+#12  Average Velocity Z2 (Light)
 boxplot(lightdark2$Avg_velz2 ~ lightdark2$LOCATION, main= "Boxplot with Beeswarm", outline= FALSE, col='white')
 beeswarm(lightdark2$Avg_velz2 ~ lightdark2$LOCATION, method = "swarm",add=TRUE, pch = 20, pwcol = as.factor(lightdark2$SEX), xlab = "Location", ylab = " Average Velocity in Light", )
 legend("topleft", legend = c("Male", "Female"), col = c("red", "black"), pch = 20)
@@ -159,10 +160,71 @@ gf_dhistogram(~ lightdark2$`Entries Z1...16`, data = lightdark2, xlab="Total Num
 gf_dhistogram(~ lightdark2$`Entries Z2...17`, data = lightdark2, xlab="Total Number of Entries in Light") %>% gf_fitdistr(dist = "norm")
 
 ######### Total DIstance (cm) in Dark or Light
-#7  Total Distance Z1 (Dark)
+#9 Total Distance Z1 (Dark)
 gf_dhistogram(~ lightdark2$TOT_DISTANCE_Z2, data = lightdark2, xlab="Total Distance (cm) in Dark") %>% gf_fitdistr(dist = "norm")
-#8  Total Distance Z2 (Light)
+#10  Total Distance Z2 (Light)
 gf_dhistogram(~ lightdark2$TOT_DISTANCE_Z1, data = lightdark2, xlab="Total Distance (cm) in Light") %>% gf_fitdistr(dist = "norm")
+
+######### Average Velocity in Dark or Light
+#11  Average Velocity (Dark)
+gf_dhistogram(~ lightdark2$Avg_velz1, data = lightdark2, xlab="Total Distance (cm) in Dark") %>% gf_fitdistr(dist = "norm")
+#12  Average Velocity (Light)
+gf_dhistogram(~ lightdark2$Avg_velz2, data = lightdark2, xlab="Total Distance (cm) in Dark") %>% gf_fitdistr(dist = "norm")
+```
+# Residual Plots 
+```{r}
+######### Total Time in Dark or Light (sec)
+#1  Total Sec Z1 (Dark)
+scatter<-lm(lightdark2$TotalSecZ1~lightdark2$LOCATION)
+plot(scatter)
+#2  Total Sec Z2 (Light)
+scatter<-lm(lightdark2$TotalSecZ2~lightdark2$LOCATION)
+plot(scatter)
+```
+```{r}
+########## Total Time Ambulatory in Dark or Light (sec)
+#3  Total Ambulatory Z1 (Dark)
+scatter<-lm(lightdark2$TotalSecAmbZ1~lightdark2$LOCATION)
+plot(scatter)
+#4  Total Ambulatory Z2 (Light)
+scatter<-lm(lightdark2$TotalSecAmbZ2~lightdark2$LOCATION)
+plot(scatter)
+```
+```{r}
+######### Total Time Resting in Dark or Light (sec)
+#5  Total Resting Z1 (Dark)
+scatter<-lm(lightdark2$TotalSecRestZ1~lightdark2$LOCATION)
+plot(scatter)
+#6  Total Resting Z2 (Light)
+scatter<-lm(lightdark2$TotalSecRestZ2~lightdark2$LOCATION)
+plot(scatter)
+```
+```{r}
+######### Total Number of Entries in Dark or Light
+#7  Total Number of Entries into Z1 (Dark)
+scatter<-lm(lightdark2$`Entries Z1...16`~lightdark2$LOCATION)
+plot(scatter)
+#8  Total Number of Entries into Z2 (Light)
+scatter<-lm(lightdark2$`Entries Z2...17`~lightdark2$LOCATION)
+plot(scatter)
+```
+```{r}
+######### Total DIstance (cm) in Dark or Light
+#9 Total Distance Z1 (Dark)
+scatter<-lm(lightdark2$TOT_DISTANCE_Z1~lightdark2$LOCATION)
+plot(scatter)
+#10  Total Distance Z2 (Light)
+scatter<-lm(lightdark2$TOT_DISTANCE_Z2~lightdark2$LOCATION)
+plot(scatter)
+```
+```{r}
+######### Average Velocity in Dark or Light
+#11  Average Velocity (Dark)
+scatter<-lm(lightdark2$Avg_velz1~lightdark2$LOCATION)
+plot(scatter)
+#12  Average Velocity (Light)
+scatter<-lm(lightdark2$Avg_velz2~lightdark2$LOCATION)
+plot(scatter)
 ```
 
 ## ANOVAs
@@ -208,22 +270,25 @@ results<-Anova(model, test="F")
 results
 
 ######### Total Distance in Dark or Light
-#7  Total Distance Z1 (Dark)
+#9  Total Distance Z1 (Dark)
 model<-glm(lightdark2$TOT_DISTANCE_Z1 ~  lightdark2$LOCATION)
 results<-Anova(model, test="F")
 results
-#8  Total Distance Z2 (Light)
+#10  Total Distance Z2 (Light)
 model<-glm(lightdark2$TOT_DISTANCE_Z2 ~  lightdark2$LOCATION)
 results<-Anova(model, test="F")
 results
 
-```
-```{r}
-model<-TukeyHSD(glm(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION ))
-model
+######### Average Velocity in Dark or Light
+#11  Average Velocity (Dark)
+model<-glm(lightdark2$Avg_velz1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
+#12  Average Velocity (Light)
+model<-glm(lightdark2$Avg_velz2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F")
+results
 
-model<-TukeyHSD(glm(lightdark2$TotalSecZ2 ~  lightdark2$LOCATION ))
-model
 ```
 
 ## Tukey Tests
@@ -304,8 +369,23 @@ model<-TukeyHSD(glm(lightdark2$TOT_DISTANCE_Z2 ~  lightdark2$LOCATION ))
 as.data.frame(tidy(model)) %>%
     filter(adj.p.value < .05)
 model
-```
 
+#  Average Velocity (Dark)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$Avg_velz1 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+#  Average Velocity (Light)
+library(reshape2)
+library(broom)
+model<-TukeyHSD(glm(lightdark2$Avg_velz2 ~  lightdark2$LOCATION ))
+as.data.frame(tidy(model)) %>%
+    filter(adj.p.value < .05)
+model
+
+```
+## PCA Analysis
 ```{r}
 library(ggfortify)
 df <- lightdark2[ ,c(4, 6, 8, 10, 12, 14, 16, 17, 18, 19, 20, 21)]
@@ -314,7 +394,7 @@ pca_res <- prcomp(df, scale. = TRUE)
 autoplot(pca_res, data= lightdark2, colour = 'LOCATION', frame=TRUE)
 ```
 ```{r}
-###PCA added to pca dataframe
+#PCA added to pca dataframe
 str(pca_res)
 summary(pca_res)
 pca<-cbind(df,pca_res[["x"]])
@@ -322,7 +402,7 @@ str(pca)
 pca
 ```
 
-#PCA ANOVAs
+## PCA ANOVAs
 ```{r}
 #Using PCA to account for 12 correlated (independent) variables with the predictor LOCATION. 
 ##PC1
@@ -342,17 +422,122 @@ results
 ```
 
 
-
-
-
-
-
-##MANOVA
+## MANOVA 
 ```{r}
-res.man <- manova(cbind(lightdark2$TotalSecZ1, lightdark2$TotalSecZ2, lightdark2$TotalSecAmbZ1, lightdark2$TotalSecAmbZ2) ~ lightdark2$LOCATION, data = lightdark2)
+#If the p-value is less than or equal to the significance level, you can conclude that the differences between the means are statistically significant. 
+res.man <- manova(cbind(lightdark2$TotalSecZ1, lightdark2$TotalSecZ2, lightdark2$TotalSecAmbZ1, lightdark2$TotalSecAmbZ2, lightdark2$TotalSecRestZ1, lightdark2$TotalSecRestZ2, lightdark2$`Entries Z1...16`, lightdark2$`Entries Z2...17`, lightdark2$TOT_DISTANCE_Z1, lightdark2$TOT_DISTANCE_Z2, lightdark2$Avg_velz1, lightdark2$Avg_velz2) ~ lightdark2$LOCATION, data = lightdark2)
 summary(res.man, test="Pillai")
 
 ```
+## ANOVAs Compared with Bonferroni Correction
+```{r}
+# Bonferroni reduces the instance of a false positive
+# prevent data from incorrectly appearing to be statistically significant
+# p-value for each test must be equal to its alpha divided by the number of tests performed
+
+
+######### Total Time in Dark or Light (sec)
+#1  Total Sec Z1 (Dark)
+model<-glm(lightdark2$TotalSecZ1 ~ lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+
+#2  Total Sec Z2 (Light)
+model<-glm(lightdark2$TotalSecZ2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+
+########## Total Time Ambulatory in Dark or Light (sec)
+#3  Total Ambulatory Z1 (Dark)
+model<-glm(lightdark2$TotalSecAmbZ1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+#4  Total Ambulatory Z2 (Light)
+model<-glm(lightdark2$TotalSecAmbZ2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+
+######### Total Time Resting in Dark or Light (sec)
+#5  Total Resting Z1 (Dark)
+model<-glm(lightdark2$TotalSecRestZ1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F",p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+#6  Total Resting Z2 (Light)
+model<-glm(lightdark2$TotalSecRestZ2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+
+######### Total Number of Entries in Dark or Light
+#7  Total Number of Entries into Z1 (Dark)
+model<-glm(lightdark2$`Entries Z1...16` ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+#8  Total Number of Entries into Z2 (Light)
+model<-glm(lightdark2$`Entries Z2...17` ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+
+######### Total Distance in Dark or Light
+#9  Total Distance Z1 (Dark)
+model<-glm(lightdark2$TOT_DISTANCE_Z1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+#10  Total Distance Z2 (Light)
+model<-glm(lightdark2$TOT_DISTANCE_Z2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+
+######### Average Velocity in Dark or Light
+#11  Average Velocity (Dark)
+model<-glm(lightdark2$Avg_velz1 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+#12  Average Velocity (Light)
+model<-glm(lightdark2$Avg_velz2 ~  lightdark2$LOCATION)
+results<-Anova(model, test="F", p.adj = "bonferroni")
+results
+PostHocTest(aov(model, test="F"), which = NULL,
+            method = c("bonferroni"),
+            conf.level = 0.95, ordered = FALSE)
+
+```
+
+
+
+
 
 
 
